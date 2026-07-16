@@ -1,6 +1,3 @@
-from src.product import Product
-
-
 class Category:
     name: str  # название
     description: str  # описание
