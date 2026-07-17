@@ -4,6 +4,12 @@ from src.category import Category
 from src.product import Product
 
 
+@pytest.fixture(autouse=True)
+def reset_counters():
+    Category.category_count = 0
+    Category.product_count = 0
+
+
 @pytest.fixture
 def first_product():
     return Product(
@@ -28,7 +34,9 @@ def second_product():
 def first_category():
     return Category(
         name="Смартфоны",
-        description="Смартфоны, как средство не только коммуникации, но и получение дополнительных функций для удобства жизни",
+        description=(
+            "Смартфоны, как средство не только коммуникации, но и получение дополнительных функций для удобства жизни"
+        ),
         products=[
             Product(
                 name="Samsung Galaxy C23 Ultra",
@@ -44,7 +52,9 @@ def first_category():
 def second_category():
     return Category(
         name="Телевизоры",
-        description="Современный телевизор, который позволяет наслаждаться просмотром, станет вашим другом и помощником",
+        description=(
+            "Современный телевизор, который позволяет наслаждаться просмотром, станет вашим другом и помощником"
+        ),
         products=[
             Product(
                 name='55" QLED 4K',
