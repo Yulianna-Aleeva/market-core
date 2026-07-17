@@ -6,6 +6,7 @@ from src.product import Product
 
 
 def read_json(path: str) -> list[dict]:
+    """Читает JSON-файл и возвращает данные в виде списка словарей."""
     full_path = os.path.abspath(path)
     with open(full_path, "r", encoding="UTF-8") as file:
         data = json.load(file)
@@ -13,6 +14,7 @@ def read_json(path: str) -> list[dict]:
 
 
 def create_objects_from_json(data):
+    """Преобразует JSON-данные в объекты категорий и продуктов."""
     categories = []
     for cat in data:
         products = []
