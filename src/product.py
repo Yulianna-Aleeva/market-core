@@ -1,11 +1,6 @@
 class Product:
-    name: str  # название
-    description: str  # описание
-    price: float  # цена
-    quantity: int  # количество в наличии
-
-    def __init__(self, name, description, price, quantity):
-        self.name = name
-        self.description = description
-        self.price = price
-        self.quantity = quantity
+    def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
+        self.name = name  # название товара
+        self.description = description  # описание товара
+        self.price = price  # цена товара
+        self.quantity = quantity  # количество товаров в наличии
