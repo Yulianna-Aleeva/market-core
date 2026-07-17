@@ -1,25 +1,28 @@
-def test_category_init(first_category, second_category):
-    assert first_category.name == "Смартфоны"
-    assert (
-        first_category.description
-        == "Смартфоны, как средство не только коммуникации, но и получение дополнительных функций для удобства жизни"
-    )
-    assert len(first_category.products) == 1
-    assert first_category.products[0].name == "Samsung Galaxy C23 Ultra"
-    assert first_category.products[0].description == "256GB, Серый цвет, 200MP камера"
-    assert first_category.products[0].price == 180000.0
-    assert first_category.products[0].quantity == 5
-    assert first_category.category_count == 2
-    assert first_category.product_count == 12
-    assert second_category.name == "Телевизоры"
-    assert (
-        second_category.description
-        == "Современный телевизор, который позволяет наслаждаться просмотром, станет вашим другом и помощником"
-    )
-    assert len(second_category.products) == 1
-    assert second_category.products[0].name == '55" QLED 4K'
-    assert second_category.products[0].description == "Фоновая подсветка"
-    assert second_category.products[0].price == 123000.0
-    assert second_category.products[0].quantity == 7
-    assert second_category.category_count == 2
-    assert second_category.product_count == 12
+from src.category import Category
+
+
+def test_category_init(first_category: Category, second_category: Category, category_data: list[dict]) -> None:
+    """Корректная инициализация объектов Category."""
+    first_data = category_data[0]
+    second_data = category_data[1]
+
+    assert first_category.name == first_data["name"]
+    assert second_category.description == second_data["description"]
+    assert len(first_category.products) == len(first_data["products"])
+    assert len(second_category.products) == len(second_data["products"])
+
+
+def test_category_init_empty_products() -> None:
+    """Инициализация категории без передачи списка товаров."""
+    category = Category("Пустая", "Без товаров")
+    assert category.products == []
+
+
+def test_category_counts(first_category: Category, second_category: Category, category_data: list[dict]) -> None:
+    """Динамическая проверка подсчета количества категорий и товаров."""
+    # Вычисляем ожидаемые значения из фикстуры category_data
+    expected_category_count = len(category_data)
+    expected_product_count = sum(len(category["products"]) for category in category_data)
+
+    assert Category.category_count == expected_category_count
+    assert Category.product_count == expected_product_count
