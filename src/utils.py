@@ -23,11 +23,11 @@ def create_objects_from_json(data):
     return categories
 
 
-if __name__ == "__main__":
+if __name__ == "__main__":  # pragma: no cover
     base_dir = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     json_path = os.path.join(base_dir, "data", "products.json")
 
-    raw_data = read_json("data/products.json")
+    raw_data = read_json(json_path)
     categories_data = create_objects_from_json(raw_data)
 
     for category in categories_data:
