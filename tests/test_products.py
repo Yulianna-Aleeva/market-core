@@ -1,4 +1,4 @@
-from src.product import Product
+from src.classes.product import Product
 
 
 def test_product_init(first_product: Product, second_product: Product, category_data: list[dict]) -> None:

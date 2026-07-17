@@ -1,27 +1,34 @@
-from src.category import Category
-from src.product import Product
-from src.utils import create_objects_from_json
+import json
+from unittest.mock import mock_open, patch
+
+from src.utils.utils import read_categories_from_json
 
 
-def test_read_json(loaded_data, mock_json_data):
-    assert len(loaded_data) == 2
-    assert loaded_data[0]["name"] == "Смартфоны"
-    assert loaded_data[1]["name"] == "Телевизоры"
-    assert len(loaded_data[0]["products"]) == 1
-    assert loaded_data[0]["products"][0]["price"] == 180000.0
+def test_read_categories_from_json(category_data: list[dict]) -> None:
+    """Проверка загрузки категорий из JSON с использованием фикстуры."""
+    # Превращаем фикстуру обратно в строку JSON (для имитации файла)
+    mock_json_data = json.dumps(category_data)
+
+    with patch("builtins.open", mock_open(read_data=mock_json_data)):
+        result = read_categories_from_json("fake_path.json")
+
+    assert len(result) == len(category_data)
+    assert result[0].name == category_data[0]["name"]
+    assert len(result[0].products) == len(category_data[0]["products"])
+    assert result[1].products[0].name == category_data[1]["products"][0]["name"]
 
 
-def test_create_objects_from_json(loaded_data):
-    categories = create_objects_from_json(loaded_data)
-    assert len(categories) == 2
-    assert isinstance(categories[0], Category)
-    assert isinstance(categories[0].products[0], Product)
-    assert categories[0].name == "Смартфоны"
-    assert categories[0].products[0].name == "Samsung Galaxy C23 Ultra"
-    assert categories[0].products[0].quantity == 5
-    assert categories[0].product_count == 12
-    assert categories[1].name == "Телевизоры"
-    assert categories[1].products[0].name == '55" QLED 4K'
-    assert categories[1].product_count == 12
-    assert Category.category_count == 2
-    assert Category.product_count == 12
+def test_read_empty_json() -> None:
+    """Пустой JSON-файл (список категорий)."""
+    with patch("builtins.open", mock_open(read_data="[]")):
+        result = read_categories_from_json("fake_path.json")
+    assert result == []
+
+
+def test_read_category_without_products() -> None:
+    """Категория без ключа products."""
+    mock_data = '[{"name": "Пустая", "description": "Без товаров"}]'
+    with patch("builtins.open", mock_open(read_data=mock_data)):
+        result = read_categories_from_json("fake_path.json")
+    assert len(result) == 1
+    assert result[0].products == []

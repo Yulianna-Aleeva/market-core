@@ -1,4 +1,4 @@
-from src.category import Category
+from src.classes.category import Category
 
 
 def test_category_init(first_category: Category, second_category: Category, category_data: list[dict]) -> None:
