@@ -1,3 +1,5 @@
+import pytest
+
 from src.classes.product import Product
 
 
@@ -26,3 +28,42 @@ def test_product_init_negative_values() -> None:
     product = Product("Товар", "Описание", -500.0, -10)
     assert product.price == -500.0
     assert product.quantity == -10
+
+
+def test_product_private_price(first_product: Product) -> None:
+    """Проверка недоступности прямого доступа к __price."""
+    with pytest.raises(AttributeError):
+        _ = first_product.__price  # noqa
+
+
+def test_product_getter_setter_positive(first_product: Product) -> None:
+    """Геттер возвращает текущее значение, сеттер корректно меняет цену."""
+    old_price = first_product.price
+    new_price = old_price + 100.0
+    first_product.price = new_price
+    assert first_product.price == new_price
+
+
+def test_product_setter_negative_or_zero(first_product: Product) -> None:
+    """Сеттер не изменяет цену при отрицательных или нулевых значениях."""
+    price_before = first_product.price
+    for value in (-500.0, -10.0, 0.0):
+        first_product.price = value
+        assert first_product.price == price_before
+
+
+def test_product_new_product(first_product: Product) -> None:
+    """Класс-метод new_product создает корректный экземпляр."""
+    # Создаем новый продукт из словаря с данными первого продукта
+    created = Product.new_product(
+        dict(
+            name=first_product.name,
+            description=first_product.description,
+            price=first_product.price,
+            quantity=first_product.quantity,
+        )
+    )
+
+    # Проверяем сразу все атрибуты
+    for attr in ["name", "description", "price", "quantity"]:
+        assert getattr(created, attr) == getattr(first_product, attr), f"Ошибка в поле {attr}"

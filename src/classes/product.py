@@ -17,6 +17,6 @@ class Product:
         self.__price = value
 
     @classmethod
-    def new_product(cls, data: dict) -> 'Product':  # Задание 3
+    def new_product(cls, data: dict) -> "Product":
         """Создает экземпляр на основе словаря."""
         return cls(data["name"], data["description"], data["price"], data["quantity"])
