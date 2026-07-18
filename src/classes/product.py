@@ -15,3 +15,8 @@ class Product:
             print("Цена не должна быть нулевая или отрицательная")
             return
         self.__price = value
+
+    @classmethod
+    def new_product(cls, data: dict) -> 'Product':  # Задание 3
+        """Создает экземпляр на основе словаря."""
+        return cls(data["name"], data["description"], data["price"], data["quantity"])
