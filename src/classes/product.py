@@ -5,6 +5,14 @@ class Product:
         self.__price = price  # приватная цена товара
         self.quantity = quantity  # количество товаров в наличии
 
+    def __str__(self) -> str:
+        """Возвращает строку с данными продукта."""
+        return f"{self.name}, {self.__price} руб. Остаток: {self.quantity} шт."
+
+    def __add__(self, other: "Product") -> float:
+        """Возвращает суммарную стоимость всех товаров двух продуктов."""
+        return self.price * self.quantity + other.price * other.quantity
+
     @property
     def price(self) -> float:  # геттер цены
         return self.__price

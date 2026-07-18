@@ -12,10 +12,14 @@ class Category:
         Category.category_count += 1
         Category.product_count += len(self.__products)
 
+    def __str__(self) -> str:
+        """Возвращает название категории и общее количество товаров."""
+        return f"{self.name}, количество продуктов: {sum(p.quantity for p in self.__products)} шт."
+
     def add_product(self, product: Product) -> None:  # добавление товара
         self.__products.append(product)
         Category.product_count += 1
 
     @property
     def products(self) -> str:  # геттер списка товаров
-        return "".join(f"{p.name}, {p.price} руб. Остаток: {p.quantity} шт.\n" for p in self.__products)
+        return "".join(f"{str(p)}\n" for p in self.__products)
