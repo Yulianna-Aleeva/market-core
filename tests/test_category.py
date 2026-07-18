@@ -54,3 +54,17 @@ def test_category_second_products_property(second_category: Category, category_d
         f"Остаток: {category_data[1]['products'][0]['quantity']} шт.\n"
     )
     assert second_category.products == expected
+
+
+def test_category_str(first_category: Category, category_data: list[dict]) -> None:
+    """Возвращает строку с названием категории и общим количеством товаров."""
+    cat_name = category_data[0]["name"]
+    total_quantity = sum(p["quantity"] for p in category_data[0]["products"])
+
+    assert str(first_category) == f"{cat_name}, количество продуктов: {total_quantity} шт."
+
+
+def test_category_str_empty() -> None:
+    """Возвращает строку для категории без товаров (должно быть 0 шт.)."""
+    category = Category("Пустая", "Без товаров")
+    assert str(category) == "Пустая, количество продуктов: 0 шт."

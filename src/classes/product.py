@@ -11,7 +11,9 @@ class Product:
 
     def __add__(self, other: "Product") -> float:
         """Возвращает суммарную стоимость всех товаров двух продуктов."""
-        return self.price * self.quantity + other.price * other.quantity
+        if type(other) is type(self):
+            return self.price * self.quantity + other.price * other.quantity
+        raise TypeError
 
     @property
     def price(self) -> float:  # геттер цены
