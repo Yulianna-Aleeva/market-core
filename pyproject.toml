@@ -9,7 +9,12 @@ license = "MIT License"
 readme = "README.md"
 requires-python = ">=3.10"
 dependencies = [
+    "pytest (>=9.1.1,<10.0.0)"
 ]
+
+
+[tool.poetry]
+package-mode = false
 
 
 [build-system]
@@ -22,7 +27,8 @@ dev = [
     "black (>=26.5.1,<27.0.0)",
     "isort (>=8.0.1,<9.0.0)",
     "flake8 (>=7.3.0,<8.0.0)",
-    "mypy (>=2.3.0,<3.0.0)"
+    "mypy (>=2.3.0,<3.0.0)",
+    "coverage (>=7.15.2,<8.0.0)"
 ]
 
 
