@@ -67,3 +67,22 @@ def test_product_new_product(first_product: Product) -> None:
     # Проверяем сразу все атрибуты
     for attr in ["name", "description", "price", "quantity"]:
         assert getattr(created, attr) == getattr(first_product, attr), f"Ошибка в поле {attr}"
+
+
+def test_product_str(first_product: Product) -> None:
+    """Возвращает строку с данными продукта."""
+    assert str(first_product) == (
+        f"{first_product.name}, {first_product.price} руб. Остаток: {first_product.quantity} шт."
+    )
+
+
+def test_product_add(first_product: Product, second_product: Product) -> None:
+    """Возвращает суммарную стоимость товаров двух продуктов."""
+    expected = first_product.price * first_product.quantity + second_product.price * second_product.quantity
+    assert first_product + second_product == expected
+
+
+def test_product_add_type_error(first_product: Product) -> None:
+    """Проверка ошибки при сложении продукта с числом."""
+    with pytest.raises(TypeError):
+        _ = first_product + 10  # type: ignore
