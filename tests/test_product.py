@@ -86,3 +86,20 @@ def test_product_add_type_error(first_product: Product) -> None:
     """Проверка ошибки при сложении продукта с числом."""
     with pytest.raises(TypeError):
         _ = first_product + 10  # type: ignore
+
+
+def test_product_repr(first_product: Product) -> None:
+    """Проверка __repr__ продукта: возвращает строку вида Product(params)."""
+    result = repr(first_product)
+    assert result.startswith("Product(")
+    assert repr(first_product.name) in result
+    assert repr(first_product.price) in result
+
+
+def test_product_init_prints_repr(category_data: list[dict], capsys: pytest.CaptureFixture[str]) -> None:
+    """При создании продукта миксин печатает repr в консоль."""
+    d = category_data[0]["products"][0]
+    product = Product(d["name"], d["description"], d["price"], d["quantity"])
+
+    captured = capsys.readouterr()
+    assert captured.out.strip() == repr(product)
