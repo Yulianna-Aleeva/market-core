@@ -83,7 +83,7 @@ def test_category_middle_price(
     source = category_data[0]
     category = Category(source["name"], source["description"], products)
 
-    expected = sum(p.price for p in products) / len(products)
+    expected = round(sum(p.price for p in products) / len(products), 2)
     assert category.middle_price() == expected
 
 
