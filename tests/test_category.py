@@ -68,3 +68,33 @@ def test_category_str_empty() -> None:
     """Возвращает строку для категории без товаров (должно быть 0 шт.)."""
     category = Category("Пустая", "Без товаров")
     assert str(category) == "Пустая, количество продуктов: 0 шт."
+
+
+def test_category_middle_price(
+    first_product: Product,
+    second_product: Product,
+    category_data: list[dict],
+) -> None:
+    """Средний ценник равен средне-арифметическому цен всех товаров."""
+    products = [first_product, second_product]
+    source = category_data[0]
+    category = Category(source["name"], source["description"], products)
+
+    expected = sum(p.price for p in products) / len(products)
+    assert category.middle_price() == expected
+
+
+def test_category_middle_price_single_product(first_product: Product, category_data: list[dict]) -> None:
+    """Средний ценник категории с одним товаром равен его цене."""
+    source = category_data[0]
+    category = Category(source["name"], source["description"], [first_product])
+
+    assert category.middle_price() == first_product.price
+
+
+def test_category_middle_price_empty() -> None:
+    """Средний ценник пустой категории равен нулю."""
+    empty_products: list[Product] = []
+    category = Category("Пустая", "Без товаров", empty_products)
+
+    assert category.middle_price() == len(empty_products)

@@ -21,6 +21,13 @@ class Category(BaseEntity):
         self.__products.append(product)
         Category.product_count += 1
 
+    def middle_price(self) -> float:
+        """Возвращает средний ценник всех товаров категории."""
+        try:
+            return sum(product.price for product in self.__products) / len(self.__products)
+        except ZeroDivisionError:
+            return 0
+
     @property
     def products(self) -> str:  # геттер списка товаров
         return "".join(f"{str(p)}\n" for p in self.__products)

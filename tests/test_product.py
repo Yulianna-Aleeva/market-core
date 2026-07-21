@@ -14,13 +14,21 @@ def test_product_init(first_product: Product, second_product: Product, category_
     assert second_product.quantity == second_data["quantity"]
 
 
-def test_product_init_edge_cases() -> None:
-    """Пустые строки, нулевые цена и количество."""
-    product = Product("", "", 0.0, 0)
+def test_product_init_edge_cases(category_data: list[dict]) -> None:
+    """Пустые строки и нулевая цена."""
+    product = Product("", "", 0.0, category_data[0]["products"][0]["quantity"])
     assert product.name == ""
     assert product.description == ""
     assert product.price == 0.0
-    assert product.quantity == 0
+
+
+def test_product_init_zero_quantity_raises(category_data: list[dict]) -> None:
+    """При создании продукта с нулевым количеством выбрасывается ValueError."""
+    data = category_data[0]["products"][0]
+    empty_list: list = []
+
+    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+        Product(data["name"], data["description"], data["price"], len(empty_list))
 
 
 def test_product_init_negative_values() -> None:
