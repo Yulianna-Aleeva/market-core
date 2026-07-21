@@ -20,6 +20,9 @@ class Category(BaseEntity):
         return f"{self.name}, количество продуктов: {sum(p.quantity for p in self.__products)} шт."
 
     def add_product(self, product: Product) -> None:  # добавление товара
+        if not isinstance(product, Product):
+            raise TypeError(MSG.INVALID_TYPE)
+
         try:  # если количество = 0, сразу выбрасывается ошибка и товар не создаётся
             if product.quantity == 0:
                 raise ZeroQuantityError

@@ -1,6 +1,7 @@
 import pytest
 
 from src.classes.product import Product
+from src.classes.smartphone import Smartphone
 from src.constants.messages import MSG
 
 
@@ -97,13 +98,28 @@ def test_product_add_type_error(first_product: Product) -> None:
         _ = first_product + 10  # type: ignore
 
 
+def test_add_same_subclass(smartphone: Smartphone) -> None:
+    """Сложение двух объектов одного подкласса работает корректно."""
+    other = Smartphone(
+        smartphone.name,
+        smartphone.description,
+        smartphone.price,
+        smartphone.quantity,
+        smartphone.efficiency,
+        smartphone.model,
+        smartphone.memory,
+        smartphone.color,
+    )
+    expected = smartphone.price * smartphone.quantity * 2
+    assert smartphone + other == expected
+
+
 def test_product_repr(first_product: Product) -> None:
     """Проверка __repr__ продукта: возвращает строку вида Product(params)."""
     result = repr(first_product)
     assert result.startswith("Product(")
     assert repr(first_product.name) in result
     assert repr(first_product.price) in result
-
 
 def test_product_init_prints_repr(category_data: list[dict], capsys: pytest.CaptureFixture[str]) -> None:
     """При создании продукта миксин печатает repr в консоль."""

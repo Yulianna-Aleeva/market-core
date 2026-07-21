@@ -1,7 +1,9 @@
 import pytest
 
 from src.classes.category import Category
+from src.classes.lawn_grass import LawnGrass
 from src.classes.product import Product
+from src.classes.smartphone import Smartphone
 from src.constants.messages import MSG
 
 
@@ -73,6 +75,18 @@ def test_category_str_empty() -> None:
     assert str(category) == "Пустая, количество продуктов: 0 шт."
 
 
+def test_category_add_product_type_error(first_category: Category) -> None:
+    """Нельзя добавить не Product в категорию."""
+    with pytest.raises(TypeError, match=MSG.INVALID_TYPE):
+        first_category.add_product("Not a product")  # type: ignore
+
+
+def test_add_different_types_error(smartphone: Smartphone, lawn_grass: LawnGrass) -> None:
+    """Нельзя складывать товары разных классов."""
+    with pytest.raises(TypeError):
+        _ = smartphone + lawn_grass
+
+
 def test_category_middle_price(
     first_product: Product,
     second_product: Product,
@@ -123,8 +137,9 @@ def test_add_product_zero_quantity(
 ) -> None:
     """При добавлении товара с нулевым количеством выводятся сообщения из MSG."""
 
-    class FakeProduct:
-        quantity = len([])
+    class FakeProduct(Product):
+        def __init__(self) -> None:  # noqa
+            self.quantity = len([])
 
     first_category.add_product(FakeProduct())  # type: ignore
     captured = capsys.readouterr()
