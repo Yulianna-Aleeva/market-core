@@ -1,6 +1,7 @@
 import pytest
 
 from src.classes.category import Category
+from src.classes.order import Order
 from src.classes.product import Product
 
 
@@ -73,3 +74,15 @@ def second_category(category_data: list[dict], second_product: Product) -> Categ
     """Вторая категория из данных."""
     c_data = category_data[1]
     return Category(c_data["name"], c_data["description"], [second_product])
+
+
+@pytest.fixture
+def order_data() -> dict:
+    """Данные для заказа."""
+    return {"name": "Заказ №1", "description": "Тестовый заказ", "quantity": 2}
+
+
+@pytest.fixture
+def order(first_product: Product, order_data: dict) -> Order:
+    """Заказ на первый продукт."""
+    return Order(order_data["name"], order_data["description"], first_product, order_data["quantity"])
