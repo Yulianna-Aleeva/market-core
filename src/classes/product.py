@@ -1,5 +1,6 @@
 from src.classes.base_product import BaseProduct
 from src.classes.print_mixin import PrintMixin
+from src.constants.messages import MSG
 
 
 class Product(PrintMixin, BaseProduct):
@@ -30,7 +31,7 @@ class Product(PrintMixin, BaseProduct):
     @price.setter
     def price(self, value: float) -> None:  # сеттер цены
         if value <= 0:
-            print("Цена не должна быть нулевая или отрицательная")
+            print(MSG.INVALID_PRICE)
             return
         self.__price = value
 

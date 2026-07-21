@@ -1,6 +1,7 @@
 import pytest
 
 from src.classes.product import Product
+from src.constants.messages import MSG
 
 
 def test_product_init(first_product: Product, second_product: Product, category_data: list[dict]) -> None:
@@ -27,7 +28,7 @@ def test_product_init_zero_quantity_raises(category_data: list[dict]) -> None:
     data = category_data[0]["products"][0]
     empty_list: list = []
 
-    with pytest.raises(ValueError, match="Товар с нулевым количеством не может быть добавлен"):
+    with pytest.raises(ValueError, match=MSG.ZERO_QUANTITY):
         Product(data["name"], data["description"], data["price"], len(empty_list))
 
 

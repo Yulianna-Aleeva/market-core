@@ -1,5 +1,8 @@
+import pytest
+
 from src.classes.category import Category
 from src.classes.product import Product
+from src.constants.messages import MSG
 
 
 def test_category_init(first_category: Category, second_category: Category, category_data: list[dict]) -> None:
@@ -98,3 +101,34 @@ def test_category_middle_price_empty() -> None:
     category = Category("Пустая", "Без товаров", empty_products)
 
     assert category.middle_price() == len(empty_products)
+
+
+def test_add_product_success_messages(
+    first_category: Category,
+    second_product: Product,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """При успешном добавлении выводятся сообщения из MSG."""
+    first_category.add_product(second_product)
+    captured = capsys.readouterr()
+
+    assert second_product.name in first_category.products
+    assert MSG.PRODUCT_ADDED in captured.out
+    assert MSG.PROCESSING_FINISHED in captured.out
+
+
+def test_add_product_zero_quantity(
+    first_category: Category,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """При добавлении товара с нулевым количеством выводятся сообщения из MSG."""
+
+    class FakeProduct:
+        quantity = len([])
+
+    first_category.add_product(FakeProduct())  # type: ignore
+    captured = capsys.readouterr()
+
+    assert MSG.ZERO_QUANTITY in captured.out
+    assert MSG.PROCESSING_FINISHED in captured.out
+    assert MSG.PRODUCT_ADDED not in captured.out
