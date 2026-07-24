@@ -1,9 +1,13 @@
 from src.classes.base_product import BaseProduct
 from src.classes.print_mixin import PrintMixin
+from src.constants.messages import MSG
 
 
 class Product(PrintMixin, BaseProduct):
     def __init__(self, name: str, description: str, price: float, quantity: int) -> None:
+        if quantity == 0:
+            raise ValueError("Товар с нулевым количеством не может быть добавлен")
+
         self.name = name  # название товара
         self.description = description  # описание товара
         self.__price = price  # приватная цена товара
@@ -27,7 +31,7 @@ class Product(PrintMixin, BaseProduct):
     @price.setter
     def price(self, value: float) -> None:  # сеттер цены
         if value <= 0:
-            print("Цена не должна быть нулевая или отрицательная")
+            print(MSG.INVALID_PRICE)
             return
         self.__price = value
 

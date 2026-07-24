@@ -1,6 +1,8 @@
 import pytest
 
 from src.classes.product import Product
+from src.classes.smartphone import Smartphone
+from src.constants.messages import MSG
 
 
 def test_product_init(first_product: Product, second_product: Product, category_data: list[dict]) -> None:
@@ -14,13 +16,21 @@ def test_product_init(first_product: Product, second_product: Product, category_
     assert second_product.quantity == second_data["quantity"]
 
 
-def test_product_init_edge_cases() -> None:
-    """Пустые строки, нулевые цена и количество."""
-    product = Product("", "", 0.0, 0)
+def test_product_init_edge_cases(category_data: list[dict]) -> None:
+    """Пустые строки и нулевая цена."""
+    product = Product("", "", 0.0, category_data[0]["products"][0]["quantity"])
     assert product.name == ""
     assert product.description == ""
     assert product.price == 0.0
-    assert product.quantity == 0
+
+
+def test_product_init_zero_quantity_raises(category_data: list[dict]) -> None:
+    """При создании продукта с нулевым количеством выбрасывается ValueError."""
+    data = category_data[0]["products"][0]
+    empty_list: list = []
+
+    with pytest.raises(ValueError, match=MSG.ZERO_QUANTITY):
+        Product(data["name"], data["description"], data["price"], len(empty_list))
 
 
 def test_product_init_negative_values() -> None:
@@ -88,13 +98,28 @@ def test_product_add_type_error(first_product: Product) -> None:
         _ = first_product + 10  # type: ignore
 
 
+def test_add_same_subclass(smartphone: Smartphone) -> None:
+    """Сложение двух объектов одного подкласса работает корректно."""
+    other = Smartphone(
+        smartphone.name,
+        smartphone.description,
+        smartphone.price,
+        smartphone.quantity,
+        smartphone.efficiency,
+        smartphone.model,
+        smartphone.memory,
+        smartphone.color,
+    )
+    expected = smartphone.price * smartphone.quantity * 2
+    assert smartphone + other == expected
+
+
 def test_product_repr(first_product: Product) -> None:
     """Проверка __repr__ продукта: возвращает строку вида Product(params)."""
     result = repr(first_product)
     assert result.startswith("Product(")
     assert repr(first_product.name) in result
     assert repr(first_product.price) in result
-
 
 def test_product_init_prints_repr(category_data: list[dict], capsys: pytest.CaptureFixture[str]) -> None:
     """При создании продукта миксин печатает repr в консоль."""

@@ -1,5 +1,7 @@
 from src.classes.base_entity import BaseEntity
+from src.classes.exceptions import ZeroQuantityError
 from src.classes.product import Product
+from src.constants.messages import MSG
 
 
 class Category(BaseEntity):
@@ -18,8 +20,27 @@ class Category(BaseEntity):
         return f"{self.name}, количество продуктов: {sum(p.quantity for p in self.__products)} шт."
 
     def add_product(self, product: Product) -> None:  # добавление товара
-        self.__products.append(product)
-        Category.product_count += 1
+        if not isinstance(product, Product):
+            raise TypeError(MSG.INVALID_TYPE)
+
+        try:  # если количество = 0, сразу выбрасывается ошибка и товар не создаётся
+            if product.quantity == 0:
+                raise ZeroQuantityError
+            self.__products.append(product)
+            Category.product_count += 1
+        except ZeroQuantityError as e:
+            print(e)
+        else:
+            print(MSG.PRODUCT_ADDED)
+        finally:
+            print(MSG.PROCESSING_FINISHED)
+
+    def middle_price(self) -> float:
+        """Возвращает средний ценник всех товаров категории."""
+        try:
+            return round(sum(product.price for product in self.__products) / len(self.__products), 2)
+        except ZeroDivisionError:
+            return 0
 
     @property
     def products(self) -> str:  # геттер списка товаров

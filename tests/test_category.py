@@ -1,5 +1,10 @@
+import pytest
+
 from src.classes.category import Category
+from src.classes.lawn_grass import LawnGrass
 from src.classes.product import Product
+from src.classes.smartphone import Smartphone
+from src.constants.messages import MSG
 
 
 def test_category_init(first_category: Category, second_category: Category, category_data: list[dict]) -> None:
@@ -68,3 +73,77 @@ def test_category_str_empty() -> None:
     """Возвращает строку для категории без товаров (должно быть 0 шт.)."""
     category = Category("Пустая", "Без товаров")
     assert str(category) == "Пустая, количество продуктов: 0 шт."
+
+
+def test_category_add_product_type_error(first_category: Category) -> None:
+    """Нельзя добавить не Product в категорию."""
+    with pytest.raises(TypeError, match=MSG.INVALID_TYPE):
+        first_category.add_product("Not a product")  # type: ignore
+
+
+def test_add_different_types_error(smartphone: Smartphone, lawn_grass: LawnGrass) -> None:
+    """Нельзя складывать товары разных классов."""
+    with pytest.raises(TypeError):
+        _ = smartphone + lawn_grass
+
+
+def test_category_middle_price(
+    first_product: Product,
+    second_product: Product,
+    category_data: list[dict],
+) -> None:
+    """Средний ценник равен средне-арифметическому цен всех товаров."""
+    products = [first_product, second_product]
+    source = category_data[0]
+    category = Category(source["name"], source["description"], products)
+
+    expected = round(sum(p.price for p in products) / len(products), 2)
+    assert category.middle_price() == expected
+
+
+def test_category_middle_price_single_product(first_product: Product, category_data: list[dict]) -> None:
+    """Средний ценник категории с одним товаром равен его цене."""
+    source = category_data[0]
+    category = Category(source["name"], source["description"], [first_product])
+
+    assert category.middle_price() == first_product.price
+
+
+def test_category_middle_price_empty() -> None:
+    """Средний ценник пустой категории равен нулю."""
+    empty_products: list[Product] = []
+    category = Category("Пустая", "Без товаров", empty_products)
+
+    assert category.middle_price() == len(empty_products)
+
+
+def test_add_product_success_messages(
+    first_category: Category,
+    second_product: Product,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """При успешном добавлении выводятся сообщения из MSG."""
+    first_category.add_product(second_product)
+    captured = capsys.readouterr()
+
+    assert second_product.name in first_category.products
+    assert MSG.PRODUCT_ADDED in captured.out
+    assert MSG.PROCESSING_FINISHED in captured.out
+
+
+def test_add_product_zero_quantity(
+    first_category: Category,
+    capsys: pytest.CaptureFixture[str],
+) -> None:
+    """При добавлении товара с нулевым количеством выводятся сообщения из MSG."""
+
+    class FakeProduct(Product):
+        def __init__(self) -> None:  # noqa
+            self.quantity = len([])
+
+    first_category.add_product(FakeProduct())  # type: ignore
+    captured = capsys.readouterr()
+
+    assert MSG.ZERO_QUANTITY in captured.out
+    assert MSG.PROCESSING_FINISHED in captured.out
+    assert MSG.PRODUCT_ADDED not in captured.out

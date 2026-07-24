@@ -1,5 +1,8 @@
+from pathlib import Path
+
 from src.classes.category import Category
 from src.classes.product import Product
+from src.utils.read_json import read_categories_from_json
 
 
 class CategoryIterator:
@@ -19,3 +22,16 @@ class CategoryIterator:
             self.index += 1
             return product
         raise StopIteration
+
+
+if __name__ == "__main__":  # pragma: no cover
+    base_dir = Path(__file__).resolve().parents[2]
+    json_path = base_dir / "data" / "products.json"
+
+    categories = read_categories_from_json(json_path)
+    first_category = categories[0]
+
+    print(f"Товары из категории '{first_category.name}' через итератор:")
+    iterator = CategoryIterator(first_category)
+    for i, p in enumerate(iterator, start=1):
+        print(f"{i}. {p.name} | {p.price} руб. | {p.quantity} шт.")

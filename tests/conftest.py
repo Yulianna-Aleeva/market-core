@@ -1,8 +1,10 @@
 import pytest
 
 from src.classes.category import Category
+from src.classes.lawn_grass import LawnGrass
 from src.classes.order import Order
 from src.classes.product import Product
+from src.classes.smartphone import Smartphone
 
 
 @pytest.fixture(autouse=True)
@@ -28,20 +30,25 @@ def category_data() -> list[dict]:
                     "description": "256GB, Серый цвет, 200MP камера",
                     "price": 180000.0,
                     "quantity": 5,
+                    "efficiency": 95.5,
+                    "model": "S23 Ultra",
+                    "memory": 256,
+                    "color": "Серый",
                 }
             ],
         },
         {
-            "name": "Телевизоры",
-            "description": (
-                "Современный телевизор, который позволяет наслаждаться просмотром, станет вашим другом и помощником"
-            ),
+            "name": "Газонная трава",
+            "description": "Различные виды газонной травы",
             "products": [
                 {
-                    "name": '55" QLED 4K',
-                    "description": "Фоновая подсветка",
-                    "price": 123000.0,
-                    "quantity": 7,
+                    "name": "Газонная трава",
+                    "description": "Элитная трава для газона",
+                    "price": 500.0,
+                    "quantity": 20,
+                    "country": "Россия",
+                    "germination_period": "7 дней",
+                    "color": "Зеленый",
                 }
             ],
         },
@@ -74,6 +81,37 @@ def second_category(category_data: list[dict], second_product: Product) -> Categ
     """Вторая категория из данных."""
     c_data = category_data[1]
     return Category(c_data["name"], c_data["description"], [second_product])
+
+
+@pytest.fixture
+def smartphone(category_data: list[dict]) -> Smartphone:
+    """Экземпляр Smartphone из данных."""
+    d = category_data[0]["products"][0]
+    return Smartphone(
+        d["name"],
+        d["description"],
+        d["price"],
+        d["quantity"],
+        d["efficiency"],
+        d["model"],
+        d["memory"],
+        d["color"],
+    )
+
+
+@pytest.fixture
+def lawn_grass(category_data: list[dict]) -> LawnGrass:
+    """Экземпляр LawnGrass из данных."""
+    d = category_data[1]["products"][0]
+    return LawnGrass(
+        d["name"],
+        d["description"],
+        d["price"],
+        d["quantity"],
+        d["country"],
+        d["germination_period"],
+        d["color"],
+    )
 
 
 @pytest.fixture
